@@ -10,7 +10,6 @@
 	import { ethers } from 'ethers'
 
 	let account = ''
-	let provider
 
 	const web3Modal = new Web3Modal({
 		providerOptions: {
@@ -57,7 +56,6 @@
 	}
 
 	function disconnect() {
-		// web3Modal.clearCachedProvider()
 		account = ''
 	}
 </script>
@@ -67,19 +65,12 @@
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section>
+<section class="flex flex-col justify-center items-center">
 	<Counter />
-	<button on:click={openModal}>Connect</button>
-	<button on:click={disconnect}>Disconnect</button>
+	{#if account}
+		<button class="btn btn-secondary" on:click={disconnect}>Disconnect</button>
+	{:else}
+		<button class="btn btn-primary" on:click={openModal}>Connect</button>
+	{/if}
 	<div>{account}</div>
 </section>
-
-<style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
-	}
-</style>
