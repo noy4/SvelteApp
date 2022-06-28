@@ -1,9 +1,65 @@
 <script context="module" lang="ts">
-	export const prerender = true;
+	export const prerender = true
 </script>
 
 <script lang="ts">
-	import Counter from '$lib/Counter.svelte';
+	import Counter from '$lib/Counter.svelte'
+	import Web3Modal from 'web3modal'
+	import WalletConnectProvider from '@walletconnect/ethereum-provider'
+	import { StaticJsonRpcProvider } from '@ethersproject/providers'
+	import { ethers } from 'ethers'
+
+	let account = ''
+	let provider
+
+	const web3Modal = new Web3Modal({
+		providerOptions: {
+			walletconnect: {
+				package: WalletConnectProvider,
+				options: {
+					infuraId: import.meta.env.VITE_INFURA_ID,
+				},
+			},
+			'custom-localhost': {
+				display: {
+					logo: 'https://avatars.githubusercontent.com/u/56928858?s=200&v=4',
+					name: 'BurnerWallet',
+					description: '🔥 Connect to localhost with a burner wallet 🔥',
+				},
+				package: StaticJsonRpcProvider,
+				connector: async (_package, options) => {
+					const url = options.rpc[options.chainId]
+					const _provider = new StaticJsonRpcProvider(url, options.chainId)
+					const network = await _provider.getNetwork()
+					console.log('options:', options)
+					console.log('network:', network)
+					if (!_provider.anyNetwork) {
+						console.warn(`Could not connect to local chain: ${options.chainId} url:${url}`)
+					}
+					return _provider
+				},
+				options: {
+					chainId: 31337,
+					rpc: {
+						[31337]: 'http://localhost:8545',
+					},
+				},
+			},
+		},
+	})
+
+	async function openModal() {
+		if (account) return
+		const instance = await web3Modal.connect()
+		const provider = new ethers.providers.Web3Provider(instance)
+		const accounts = await provider.listAccounts()
+		account = accounts[0]
+	}
+
+	function disconnect() {
+		// web3Modal.clearCachedProvider()
+		account = ''
+	}
 </script>
 
 <svelte:head>
@@ -12,22 +68,10 @@
 </svelte:head>
 
 <section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="Welcome" />
-			</picture>
-		</span>
-
-		to your new<br />SvelteKit app
-	</h1>
-
-	<h2>
-		try editing <strong>src/routes/index.svelte</strong>
-	</h2>
-
 	<Counter />
+	<button on:click={openModal}>Connect</button>
+	<button on:click={disconnect}>Disconnect</button>
+	<div>{account}</div>
 </section>
 
 <style>
@@ -37,25 +81,5 @@
 		justify-content: center;
 		align-items: center;
 		flex: 1;
-	}
-
-	h1 {
-		width: 100%;
-	}
-
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
 	}
 </style>
