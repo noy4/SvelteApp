@@ -10,10 +10,22 @@
 	import { ethers } from 'ethers'
 	import { onMount } from 'svelte'
 	import { themeChange } from 'theme-change'
+	import {
+		defaultEvmStores,
+		connected,
+		provider,
+		chainId,
+		signer,
+		signerAddress,
+		contracts,
+	} from 'svelte-ethers-store'
+	import { abi } from '$lib/KuwaCoin.json'
+	import { formatEther } from 'ethers/lib/utils'
 
 	let account = ''
 
 	const web3Modal = new Web3Modal({
+		cacheProvider: true,
 		providerOptions: {
 			walletconnect: {
 				package: WalletConnectProvider,
@@ -51,18 +63,39 @@
 
 	async function openModal() {
 		if (account) return
-		const instance = await web3Modal.connect()
-		const provider = new ethers.providers.Web3Provider(instance)
+		const _provider = await web3Modal.connect()
+		const provider = new ethers.providers.Web3Provider(_provider)
+		defaultEvmStores.setProvider(provider)
 		const accounts = await provider.listAccounts()
 		account = accounts[0]
 	}
 
 	function disconnect() {
+		web3Modal.clearCachedProvider()
+		defaultEvmStores.disconnect()
 		account = ''
 	}
 
+	async function connectOnMount() {
+		if (!web3Modal.cachedProvider) return
+		const _provider = await web3Modal.connectTo(web3Modal.cachedProvider)
+		const provider = new ethers.providers.Web3Provider(_provider)
+		defaultEvmStores.setProvider(provider)
+		const accounts = await provider.listAccounts()
+		account = accounts[0]
+	}
+
+	defaultEvmStores.attachContract(
+		'kuwaCoin',
+		'0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
+		JSON.stringify(abi)
+	)
+
+	$: balance = $contracts.kuwaCoin?.balanceOf('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266')
+
 	onMount(() => {
 		themeChange(false)
+		connectOnMount()
 	})
 </script>
 
@@ -95,4 +128,29 @@
 		<button class="btn btn-primary" on:click={openModal}>Connect</button>
 	{/if}
 	<div>{account}</div>
+
+	<div>connected: {$connected}</div>
+	<div>provider: {$provider}</div>
+	<div>chainId: {$chainId}</div>
+	<div>signer: {$signer}</div>
+	<div>signerAddress: {$signerAddress}</div>
+	<div>contracts: {$contracts}</div>
+
+	<div>
+		balance:
+		{#await balance}
+			loading...
+		{:then value}
+			{value && formatEther(value)}
+		{/await}
+	</div>
+
+	<div>
+		totalSupply:
+		{#await $contracts.kuwaCoin?.totalSupply()}
+			loading...
+		{:then value}
+			{value && formatEther(value)}
+		{/await}
+	</div>
 </section>
