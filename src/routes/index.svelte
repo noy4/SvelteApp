@@ -3,63 +3,24 @@
 </script>
 
 <script lang="ts">
+	import { KuwaCoin__factory, type KuwaCoin } from '$generated/typechain-types'
 	import Counter from '$lib/Counter.svelte'
-	import Web3Modal from 'web3modal'
-	import WalletConnectProvider from '@walletconnect/ethereum-provider'
-	import { StaticJsonRpcProvider } from '@ethersproject/providers'
+	import { web3Modal } from '$lib/web3Modal'
 	import { ethers } from 'ethers'
+	import { formatEther } from 'ethers/lib/utils'
 	import { onMount } from 'svelte'
-	import { themeChange } from 'theme-change'
 	import {
-		defaultEvmStores,
-		connected,
-		provider,
 		chainId,
+		connected,
+		contracts,
+		defaultEvmStores,
+		provider,
 		signer,
 		signerAddress,
-		contracts,
 	} from 'svelte-ethers-store'
-	import { abi } from '$lib/KuwaCoin.json'
-	import { formatEther } from 'ethers/lib/utils'
+	import { themeChange } from 'theme-change'
 
 	let account = ''
-
-	const web3Modal = new Web3Modal({
-		cacheProvider: true,
-		providerOptions: {
-			walletconnect: {
-				package: WalletConnectProvider,
-				options: {
-					infuraId: import.meta.env.VITE_INFURA_ID,
-				},
-			},
-			'custom-localhost': {
-				display: {
-					logo: 'https://avatars.githubusercontent.com/u/56928858?s=200&v=4',
-					name: 'BurnerWallet',
-					description: '🔥 Connect to localhost with a burner wallet 🔥',
-				},
-				package: StaticJsonRpcProvider,
-				connector: async (_package, options) => {
-					const url = options.rpc[options.chainId]
-					const _provider = new StaticJsonRpcProvider(url, options.chainId)
-					const network = await _provider.getNetwork()
-					console.log('options:', options)
-					console.log('network:', network)
-					if (!_provider.anyNetwork) {
-						console.warn(`Could not connect to local chain: ${options.chainId} url:${url}`)
-					}
-					return _provider
-				},
-				options: {
-					chainId: 31337,
-					rpc: {
-						[31337]: 'http://localhost:8545',
-					},
-				},
-			},
-		},
-	})
 
 	async function openModal() {
 		if (account) return
@@ -88,10 +49,11 @@
 	defaultEvmStores.attachContract(
 		'kuwaCoin',
 		'0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
-		JSON.stringify(abi)
+		JSON.stringify(KuwaCoin__factory.abi)
 	)
 
-	$: balance = $contracts.kuwaCoin?.balanceOf('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266')
+	$: kuwaCoin = $contracts.kuwaCoin as KuwaCoin
+	$: balance = kuwaCoin?.balanceOf('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266')
 
 	onMount(() => {
 		themeChange(false)
