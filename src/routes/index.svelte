@@ -3,7 +3,7 @@
 </script>
 
 <script lang="ts">
-	import { KuwaCoin__factory, type KuwaCoin } from '$generated/typechain-types'
+	import { KuwaCoin__factory } from '$generated/typechain-types'
 	import Counter from '$lib/Counter.svelte'
 	import { web3Modal } from '$lib/web3Modal'
 	import { ethers } from 'ethers'
@@ -46,13 +46,12 @@
 		account = accounts[0]
 	}
 
-	defaultEvmStores.attachContract(
-		'kuwaCoin',
-		'0xe7f1725e7734ce288f8367e1bb143e90bb3f0512',
-		JSON.stringify(KuwaCoin__factory.abi)
-	)
+	$: signerOrProvider = $signer || $provider
+	const kuwaCoinAddress = '0xe7f1725e7734ce288f8367e1bb143e90bb3f0512'
 
-	$: kuwaCoin = $contracts.kuwaCoin as KuwaCoin
+	$: kuwaCoin = signerOrProvider
+		? KuwaCoin__factory.connect(kuwaCoinAddress, signerOrProvider)
+		: undefined
 	$: balance = kuwaCoin?.balanceOf('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266')
 
 	onMount(() => {
@@ -109,7 +108,7 @@
 
 	<div>
 		totalSupply:
-		{#await $contracts.kuwaCoin?.totalSupply()}
+		{#await kuwaCoin?.totalSupply()}
 			loading...
 		{:then value}
 			{value && formatEther(value)}
