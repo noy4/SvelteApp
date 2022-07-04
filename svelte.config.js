@@ -25,6 +25,9 @@ const config = {
 			// define: { global: 'globalThis' },
 			// optimizeDeps: { include: ['ethers'] },
 		},
+		prerender: {
+			default: true,
+		},
 	},
 }
 
