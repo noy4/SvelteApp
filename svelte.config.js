@@ -18,9 +18,13 @@ const config = {
 		methodOverride: {
 			allowed: ['PATCH', 'DELETE'],
 		},
-		// vite: {
-		// 	define: { global: 'globalThis' },
-		// },
+		alias: {
+			$generated: 'src/generated',
+		},
+		vite: {
+			// define: { global: 'globalThis' },
+			// optimizeDeps: { include: ['ethers'] },
+		},
 	},
 }
 
