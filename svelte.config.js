@@ -20,6 +20,7 @@ const config = {
 		},
 		alias: {
 			$generated: 'src/generated',
+			$components: 'src/components',
 		},
 		vite: {
 			// define: { global: 'globalThis' },

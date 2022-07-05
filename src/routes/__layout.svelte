@@ -1,8 +1,7 @@
 <script lang="ts">
-	import BottomNav from '$lib/BottomNav.svelte'
-	import Header from '$lib/header/Header.svelte'
+	import { BottomNav, Header } from '$components'
 	import { Buffer } from 'buffer'
-	import '../app.css'
+	import '$lib/styles/app.css'
 
 	window.Buffer = Buffer
 </script>

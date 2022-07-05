@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { web3Modal } from '$lib/web3Modal'
+	import { web3Modal } from '$lib/internal/web3Modal'
 	import { ethers } from 'ethers'
 	import { onMount } from 'svelte'
-	import { theme } from '$lib/theme'
+	import { theme } from '$lib/styles/theme'
 
 	import { defaultEvmStores, signerAddress } from 'svelte-ethers-store'
 
