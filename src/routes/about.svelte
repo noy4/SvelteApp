@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { KuwaCoin__factory } from '$generated/typechain-types'
+	import { shortenAddress } from '$lib/utils'
 	import { formatEther } from 'ethers/lib/utils'
 	import { chainId, connected, provider, signer, signerAddress } from 'svelte-ethers-store'
 
@@ -20,7 +21,7 @@
 <section class="flex flex-col justify-center items-center">
 	<div>connected: {$connected}</div>
 	<div>chainId: {$chainId}</div>
-	<div>signerAddress: {$signerAddress}</div>
+	<div>signerAddress: {shortenAddress($signerAddress)}</div>
 
 	<div>
 		balance:
