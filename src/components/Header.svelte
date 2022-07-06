@@ -4,7 +4,11 @@
 	import { onMount } from 'svelte'
 	import { theme } from '$lib/styles/theme'
 
-	import { defaultEvmStores, signerAddress } from 'svelte-ethers-store'
+	import { defaultEvmStores, signer, signerAddress } from 'svelte-ethers-store'
+	// @ts-ignore
+	import { Jazzicon } from 'svelte-ethers-store/components'
+	import { shortenAddress } from '$lib/utils'
+	import { formatEther } from 'ethers/lib/utils'
 
 	async function openModal() {
 		if ($signerAddress) return
@@ -25,6 +29,8 @@
 		defaultEvmStores.setProvider(provider)
 	}
 
+	$: balance = $signer && $signer.getBalance()
+
 	onMount(() => {
 		connectOnMount()
 	})
@@ -41,7 +47,17 @@
 	</div>
 
 	{#if $signerAddress}
-		<button class="btn btn-secondary btn-sm btn-outline" on:click={disconnect}>Disconnect</button>
+		<div class="bg-base-200 p-0.5 rounded-xl">
+			{#await balance then value}
+				<div class="mx-2">{Number((+formatEther(value)).toFixed(4))} ETH</div>
+			{/await}
+			<button
+				class="btn btn-ghost btn-sm normal-case bg-base-100 rounded-xl gap-2"
+				on:click={disconnect}>
+				<div>{shortenAddress($signerAddress)}</div>
+				<Jazzicon size="18" />
+			</button>
+		</div>
 	{:else}
 		<button class="btn btn-primary btn-sm btn-outline" on:click={openModal}>Connect</button>
 	{/if}
