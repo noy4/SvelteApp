@@ -32,9 +32,11 @@
 
 <header class="navbar shadow bg-base-100 gap-2">
 	<div class="flex-1">
-		<button class="btn btn-ghost text-xl normal-case">
-			<div class="sm:hidden">桑</div>
-			<div class="hidden sm:block">Kuwa Coin</div>
+		<button class="btn btn-ghost text-xl normal-case not-prose">
+			<a href="/">
+				<div class="sm:hidden">桑</div>
+				<div class="hidden sm:block">Kuwa Coin</div>
+			</a>
 		</button>
 	</div>
 

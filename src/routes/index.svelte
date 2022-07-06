@@ -1,5 +1,17 @@
 <script lang="ts">
-	const rate = 310_421
+	import { DEV_ADDRESS, kuwaCoin, vendor } from '$lib/internal/contracts'
+	import { formatEther, parseEther } from 'ethers/lib/utils'
+
+	$: balance = $kuwaCoin?.balanceOf(DEV_ADDRESS)
+	$: rate = $vendor?.TOKEN_RATE()
+
+	$: price = (async () => {
+		if (rate) {
+			const _rate = await rate
+			const price = parseEther('5000').div(_rate)
+			return formatEther(price)
+		}
+	})()
 </script>
 
 <svelte:head>
@@ -10,7 +22,11 @@
 <section class="flex flex-col items-center mx-4">
 	<h3 class="mt-2">You have</h3>
 	<div>
-		<span class="text-5xl font-semibold">{(5000).toLocaleString()}</span>
+		<span class="text-5xl font-semibold">
+			{#await balance then value}
+				{formatEther(value ?? 0).toLocaleString()}
+			{/await}
+		</span>
 		<span class="font-bold">KWC</span>
 	</div>
 
@@ -19,11 +35,19 @@
 			<h2 class="card-title">Buy 5,000 KWC</h2>
 			<div class="flex w-full justify-between">
 				<p>Rate</p>
-				<p class="flex-grow-0">{rate.toLocaleString()} KWC/ETH</p>
+				<p class="flex-grow-0">
+					{#await rate then value}
+						{value ? value.toNumber().toLocaleString() : '-'}
+					{/await} KWC/ETH
+				</p>
 			</div>
 			<div class="flex w-full justify-between">
 				<p>Price</p>
-				<p class="flex-grow-0">{5000 / rate} ETH</p>
+				<p class="flex-grow-0">
+					{#await price then value}
+						{value || '-'} ETH
+					{/await}
+				</p>
 			</div>
 			<div class="card-actions mt-4">
 				<button class="btn btn-primary">Buy Now</button>
@@ -36,11 +60,19 @@
 			<h2 class="card-title">Sell 5,000 KWC</h2>
 			<div class="flex w-full justify-between">
 				<p>Rate</p>
-				<p class="flex-grow-0">{rate.toLocaleString()} KWC/ETH</p>
+				<p class="flex-grow-0">
+					{#await rate then value}
+						{value ? value.toNumber().toLocaleString() : '-'}
+					{/await} KWC/ETH
+				</p>
 			</div>
 			<div class="flex w-full justify-between">
 				<p>Price</p>
-				<p class="flex-grow-0">{5000 / rate} ETH</p>
+				<p class="flex-grow-0">
+					{#await price then value}
+						{value || '-'} ETH
+					{/await}
+				</p>
 			</div>
 			<div class="card-actions mt-4">
 				<button class="btn btn-primary">Sell Now</button>
