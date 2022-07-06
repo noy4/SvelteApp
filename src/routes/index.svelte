@@ -45,8 +45,8 @@
 				<p>Price</p>
 				<p class="flex-grow-0">
 					{#await price then value}
-						{value || '-'} ETH
-					{/await}
+						{value || '-'}
+					{/await} ETH
 				</p>
 			</div>
 			<div class="card-actions mt-4">
@@ -70,8 +70,8 @@
 				<p>Price</p>
 				<p class="flex-grow-0">
 					{#await price then value}
-						{value || '-'} ETH
-					{/await}
+						{value || '-'}
+					{/await} ETH
 				</p>
 			</div>
 			<div class="card-actions mt-4">
