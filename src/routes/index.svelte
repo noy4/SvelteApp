@@ -1,12 +1,15 @@
 <script lang="ts">
-	import { DEV_ADDRESS, kuwaCoin, vendor } from '$lib/internal/contracts'
+	import { DEV_ADDRESS, kuwaCoin, vendor, VENDOR_ADDRESS } from '$lib/internal/contracts'
 	import { formatEther, parseEther } from 'ethers/lib/utils'
 	import { signerAddress } from 'svelte-ethers-store'
 
 	let isBuying = false
+	let isSelling = false
+	let isApproving = false
 
 	$: balance = $kuwaCoin?.balanceOf($signerAddress)
 	$: rate = $vendor?.TOKEN_RATE()
+	$: allowance = $kuwaCoin?.allowance($signerAddress, VENDOR_ADDRESS)
 
 	$: price = (async () => {
 		if (!rate) return
@@ -21,11 +24,36 @@
 		try {
 			const tx = await $vendor.buyTokens({ value: await price })
 			const receipt = await tx.wait()
-			console.log('receipt:', receipt)
 		} catch (error) {
 			console.log('error:', error)
 		} finally {
 			isBuying = false
+		}
+	}
+
+	async function sellKuwaCoin() {
+		if (!$vendor) return
+		isSelling = true
+		try {
+			const tx = await $vendor.sellTokens(parseEther('5000'))
+			const receipt = await tx.wait()
+		} catch (error) {
+			console.log('error:', error)
+		} finally {
+			isSelling = false
+		}
+	}
+
+	async function approve() {
+		if (!$kuwaCoin || !balance) return
+		isApproving = true
+		try {
+			const tx = await $kuwaCoin.approve(VENDOR_ADDRESS, balance)
+			const receipt = await tx.wait()
+		} catch (error) {
+			console.log('error:', error)
+		} finally {
+			isApproving = false
 		}
 	}
 </script>
@@ -92,7 +120,15 @@
 				</p>
 			</div>
 			<div class="card-actions mt-4">
-				<button class="btn btn-primary">Sell Now</button>
+				{#await allowance then value}
+					{#if value && value.lt(parseEther('5000'))}
+						<button class="btn btn-primary" class:loading={isApproving} on:click={approve}
+							>Approve</button>
+					{:else}
+						<button class="btn btn-primary" class:loading={isSelling} on:click={sellKuwaCoin}
+							>Sell Now</button>
+					{/if}
+				{/await}
 			</div>
 		</div>
 	</div>
