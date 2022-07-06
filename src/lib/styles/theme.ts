@@ -10,7 +10,7 @@ function createTheme() {
 		document.documentElement.setAttribute('data-theme', 'dark')
 		set('dark')
 	} else {
-		document.documentElement.removeAttribute('data-theme')
+		document.documentElement.setAttribute('data-theme', 'light')
 		set('light')
 	}
 
@@ -20,7 +20,7 @@ function createTheme() {
 		set('dark')
 	}
 	function setLight() {
-		document.documentElement.removeAttribute('data-theme')
+		document.documentElement.setAttribute('data-theme', 'light')
 		localStorage.theme = 'light'
 		set('light')
 	}
