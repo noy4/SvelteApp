@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-	@apply bg-base-200 prose max-w-none;
+  @apply bg-base-200 prose max-w-none;
 }
 
 [data-theme='dark'] {
-	@apply prose-invert;
+  @apply prose-invert;
 }
