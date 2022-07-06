@@ -1,17 +1,33 @@
 <script lang="ts">
 	import { DEV_ADDRESS, kuwaCoin, vendor } from '$lib/internal/contracts'
 	import { formatEther, parseEther } from 'ethers/lib/utils'
+	import { signerAddress } from 'svelte-ethers-store'
 
-	$: balance = $kuwaCoin?.balanceOf(DEV_ADDRESS)
+	let isBuying = false
+
+	$: balance = $kuwaCoin?.balanceOf($signerAddress)
 	$: rate = $vendor?.TOKEN_RATE()
 
 	$: price = (async () => {
-		if (rate) {
-			const _rate = await rate
-			const price = parseEther('5000').div(_rate)
-			return formatEther(price)
-		}
+		if (!rate) return
+		const _rate = await rate
+		const price = parseEther('5000').div(_rate)
+		return price
 	})()
+
+	async function buyKuwaCoin() {
+		if (!$vendor) return
+		isBuying = true
+		try {
+			const tx = await $vendor.buyTokens({ value: await price })
+			const receipt = await tx.wait()
+			console.log('receipt:', receipt)
+		} catch (error) {
+			console.log('error:', error)
+		} finally {
+			isBuying = false
+		}
+	}
 </script>
 
 <svelte:head>
@@ -45,12 +61,13 @@
 				<p>Price</p>
 				<p class="flex-grow-0">
 					{#await price then value}
-						{value || '-'}
+						{value ? formatEther(value) : '-'}
 					{/await} ETH
 				</p>
 			</div>
 			<div class="card-actions mt-4">
-				<button class="btn btn-primary">Buy Now</button>
+				<button class="btn btn-primary" class:loading={isBuying} on:click={buyKuwaCoin}
+					>Buy Now</button>
 			</div>
 		</div>
 	</div>
@@ -70,7 +87,7 @@
 				<p>Price</p>
 				<p class="flex-grow-0">
 					{#await price then value}
-						{value || '-'}
+						{value ? formatEther(value) : '-'}
 					{/await} ETH
 				</p>
 			</div>
