@@ -34,8 +34,8 @@
   $: balance = $signer && $signer.getBalance()
 
   onMount(() => {
-    connectOnMount()
     web3Modal = getWeb3Modal()
+    connectOnMount()
   })
 </script>
 
