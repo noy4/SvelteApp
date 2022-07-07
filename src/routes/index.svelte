@@ -95,8 +95,7 @@
       </div>
       <div class="card-actions mt-4">
         <button class="btn btn-primary" class:loading={isBuying} on:click={buyKuwaCoin}
-          >Buy Now</button
-        >
+          >Buy Now</button>
       </div>
     </div>
   </div>
@@ -124,12 +123,10 @@
         {#await allowance then value}
           {#if value && value.lt(parseEther('5000'))}
             <button class="btn btn-primary" class:loading={isApproving} on:click={approve}
-              >Approve</button
-            >
+              >Approve</button>
           {:else}
             <button class="btn btn-primary" class:loading={isSelling} on:click={sellKuwaCoin}
-              >Sell Now</button
-            >
+              >Sell Now</button>
           {/if}
         {/await}
       </div>
