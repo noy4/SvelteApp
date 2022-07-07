@@ -1,15 +1,51 @@
 <script lang="ts">
-  import { DEV_ADDRESS, kuwaCoin, vendor, VENDOR_ADDRESS } from '$lib/internal/contracts'
+  import { kuwaCoin, vendor, VENDOR_ADDRESS } from '$lib/internal/contracts'
+  import dayjs from 'dayjs'
   import { formatEther, parseEther } from 'ethers/lib/utils'
   import { signerAddress } from 'svelte-ethers-store'
+  import type { TransferEvent } from '$generated/typechain-types/contracts/Vendor'
+  import { shortenAddress } from '$lib/utils'
+  // @ts-ignore
+  import { Jazzicon } from 'svelte-ethers-store/components'
 
   let isBuying = false
   let isSelling = false
   let isApproving = false
+  let transfers: TransferEvent[] = []
+  let isTransfersLoading = false
 
   $: balance = $kuwaCoin?.balanceOf($signerAddress)
-  $: rate = $vendor?.TOKEN_RATE()
   $: allowance = $kuwaCoin?.allowance($signerAddress, VENDOR_ADDRESS)
+  $: rate = $vendor?.TOKEN_RATE()
+
+  async function getTransfers() {
+    if (!$vendor) return
+    isTransfersLoading = true
+    transfers = await $vendor.queryFilter($vendor.filters.Transfer())
+    isTransfersLoading = false
+  }
+
+  $: if ($vendor) {
+    $vendor.on('Transfer', (...args) => {
+      console.log({
+        transactionHash: args[4].transactionHash.slice(2, 4),
+        side: args[1],
+        tokenAmount: formatEther(args[3]),
+      })
+      balance = $kuwaCoin?.balanceOf($signerAddress)
+      allowance = $kuwaCoin?.allowance($signerAddress, VENDOR_ADDRESS)
+      getTransfers()
+    })
+  }
+
+  $: if ($vendor) {
+    getTransfers()
+  }
+
+  $: $kuwaCoin?.on('Approval', () => {
+    allowance = $kuwaCoin?.allowance($signerAddress, VENDOR_ADDRESS)
+    console.log('Approval')
+  })
 
   $: price = (async () => {
     if (!rate) return
@@ -131,6 +167,58 @@
         {/await}
       </div>
     </div>
+  </div>
+
+  <h2>Logs</h2>
+
+  <div class="overflow-x-auto max-w-xl mx-auto not-prose mt-8 z-0">
+    <table class="table table-compact w-full">
+      <thead>
+        <tr>
+          <th>Age</th>
+          <th>Who</th>
+          <th>Side</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {#if isTransfersLoading && transfers.length === 0}
+          <tr>loading...</tr>
+        {:else}
+          {#each transfers.reverse() as item}
+            <tr>
+              <td>
+                {#await item.getBlock()}
+                  loading...
+                {:then block}
+                  {dayjs(block.timestamp * 1000).fromNow(true)}
+                {/await}
+              </td>
+              <td
+                ><div class="flex items-center gap-2">
+                  <Jazzicon size="18" address={item.args.who} />
+                  {shortenAddress(item.args.who)}
+                  {#if item.args.who === $signerAddress}
+                    <div class="badge badge-sm badge-ghost">You</div>
+                  {/if}
+                </div>
+              </td>
+              <td
+                ><div class="flex items-center gap-2">
+                  {#if item.args.side === 'buy'}
+                    <div class="badge badge-primary badge-sm">Buy</div>
+                  {:else}
+                    <div class="badge badge-secondary badge-sm">Sell</div>
+                  {/if}
+                </div>
+              </td>
+              <td>{formatEther(item.args.tokenAmount)}</td>
+            </tr>
+          {/each}
+        {/if}
+      </tbody>
+    </table>
   </div>
 
   <div class="h-16" />

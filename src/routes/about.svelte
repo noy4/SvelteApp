@@ -1,11 +1,9 @@
 <script lang="ts">
   import { kuwaCoin, VENDOR_ADDRESS } from '$lib/internal/contracts'
   import { shortenAddress } from '$lib/utils'
+  import dayjs from 'dayjs'
   import { formatEther } from 'ethers/lib/utils'
   import { chainId, connected, provider, signerAddress } from 'svelte-ethers-store'
-  import dayjs from 'dayjs'
-  import relativeTime from 'dayjs/plugin/relativeTime'
-  dayjs.extend(relativeTime)
   // @ts-ignore
   import { Jazzicon } from 'svelte-ethers-store/components'
 
@@ -50,32 +48,36 @@
         {#await transfers}
           <tr>loading...</tr>
         {:then items}
-          {#if items}
-            {#each items.reverse() as item}
-              <tr>
-                <td>
-                  {#await item.getBlock()}
-                    loading...
-                  {:then block}
-                    {dayjs(block.timestamp * 1000).fromNow(true)}
-                  {/await}
-                </td>
-                <td
-                  ><div class="flex items-center gap-2">
-                    <Jazzicon size="18" address={item.args.from} />
-                    {shortenAddress(item.args.from)}
-                  </div>
-                </td>
-                <td
-                  ><div class="flex items-center gap-2">
-                    <Jazzicon size="18" address={item.args.to} />
-                    {shortenAddress(item.args.to)}
-                  </div>
-                </td>
-                <td>{formatEther(item.args.value)}</td>
-              </tr>
-            {/each}
-          {/if}
+          {#each (items ?? []).reverse() as item}
+            <tr>
+              <td>
+                {#await item.getBlock()}
+                  loading...
+                {:then block}
+                  {dayjs(block.timestamp * 1000).fromNow(true)}
+                {/await}
+              </td>
+              <td
+                ><div class="flex items-center gap-2">
+                  <Jazzicon size="18" address={item.args.from} />
+                  {shortenAddress(item.args.from)}
+                  {#if item.args.from === $signerAddress}
+                    <div class="badge badge-sm badge-ghost">You</div>
+                  {/if}
+                </div>
+              </td>
+              <td
+                ><div class="flex items-center gap-2">
+                  <Jazzicon size="18" address={item.args.to} />
+                  {shortenAddress(item.args.to)}
+                  {#if item.args.to === $signerAddress}
+                    <div class="badge badge-sm badge-ghost">You</div>
+                  {/if}
+                </div>
+              </td>
+              <td>{formatEther(item.args.value)}</td>
+            </tr>
+          {/each}
         {/await}
       </tbody>
     </table>
