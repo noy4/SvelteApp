@@ -18,6 +18,7 @@
     "@sveltejs/kit": "next",
     "@tailwindcss/typography": "^0.5.2",
     "@types/cookie": "^0.5.1",
+    "@types/marked": "^4.0.3",
     "autoprefixer": "^10.4.7",
     "postcss": "^8.4.14",
     "prettier": "^2.6.2",
@@ -39,6 +40,8 @@
     "dayjs": "^1.11.3",
     "ethers": "^5.6.9",
     "events": "^3.3.0",
+    "gray-matter": "^4.0.3",
+    "marked": "^4.0.17",
     "svelte-ethers-store": "^2.5.5",
     "web3modal": "^1.9.8"
   }

@@ -99,7 +99,7 @@
   <meta name="description" content="Svelte demo app" />
 </svelte:head>
 
-<section class="flex flex-col items-center mx-4">
+<section class="flex flex-col items-center px-4">
   <h3 class="mt-2">You have</h3>
   <div>
     <span class="text-5xl font-semibold">
@@ -171,7 +171,7 @@
 
   <h2>Logs</h2>
 
-  <div class="overflow-x-auto max-w-xl mx-auto not-prose mt-8 z-0">
+  <div class="overflow-x-auto max-w-md w-full mx-auto not-prose mt-8 z-0">
     <table class="table table-compact w-full">
       <thead>
         <tr>
