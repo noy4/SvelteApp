@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Card } from '$components'
+
   import { kuwaCoin, VENDOR_ADDRESS } from '$lib/internal/contracts'
   import { shortenAddress } from '$lib/utils'
   import dayjs from 'dayjs'
@@ -83,7 +85,7 @@
     </table>
   </div>
 
-  <div class="card bg-base-100 p-8 mt-8 shadow-xl max-w-sm mx-auto">
+  <Card class="p-8 mt-8 mx-auto">
     <div class="flex justify-between">
       <div>connected</div>
       <div>{$connected}</div>
@@ -146,5 +148,7 @@
         {/await}
       </div>
     </div>
-  </div>
+  </Card>
+
+  <div class="h-16" />
 </section>

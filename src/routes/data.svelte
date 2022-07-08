@@ -1,9 +1,11 @@
 <script lang="ts">
+  import { Card } from '$components'
+
   import { kuwaCoin, KUWA_COIN_ADDRESS, VENDOR_ADDRESS } from '$lib/internal/contracts'
   import { shortenAddress } from '$lib/utils'
   import dayjs from 'dayjs'
   import { formatEther } from 'ethers/lib/utils'
-  import { chainId, connected, provider, signerAddress } from 'svelte-ethers-store'
+  import { chainId, signerAddress } from 'svelte-ethers-store'
   // @ts-ignore
   import { Jazzicon } from 'svelte-ethers-store/components'
 
@@ -22,7 +24,7 @@
 <section class="flex flex-col items-center px-8">
   <h1 class="pt-8">Kuwa Coin</h1>
 
-  <div class="card bg-base-100 p-8 shadow-xl max-w-sm w-full">
+  <Card class="p-8">
     <div class="flex justify-between">
       <div>chainId</div>
       <div>{$chainId}</div>
@@ -43,7 +45,7 @@
         {/await}
       </div>
     </div>
-  </div>
+  </Card>
 
   <h2>Transfers</h2>
 

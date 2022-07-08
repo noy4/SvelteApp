@@ -7,6 +7,7 @@
   import { shortenAddress } from '$lib/utils'
   // @ts-ignore
   import { Jazzicon } from 'svelte-ethers-store/components'
+  import { Card } from '$components'
 
   let isBuying = false
   let isSelling = false
@@ -110,7 +111,7 @@
     <span class="font-bold">KWC</span>
   </div>
 
-  <div class="card w-full max-w-sm bg-base-100 shadow-xl not-prose mt-8">
+  <Card class="not-prose mt-8">
     <div class="card-body items-center">
       <h2 class="card-title">Buy 5,000 KWC</h2>
       <div class="flex w-full justify-between">
@@ -134,9 +135,9 @@
           >Buy Now</button>
       </div>
     </div>
-  </div>
+  </Card>
 
-  <div class="card w-full max-w-sm bg-base-100 shadow-xl not-prose mt-8">
+  <Card class="not-prose mt-8">
     <div class="card-body items-center">
       <h2 class="card-title">Sell 5,000 KWC</h2>
       <div class="flex w-full justify-between">
@@ -167,7 +168,7 @@
         {/await}
       </div>
     </div>
-  </div>
+  </Card>
 
   <h2>Logs</h2>
 
