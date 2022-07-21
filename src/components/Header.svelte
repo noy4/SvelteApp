@@ -10,6 +10,9 @@
   import { Jazzicon } from 'svelte-ethers-store/components'
   import type Web3Modal from 'web3modal'
 
+  let className = ''
+  export { className as class }
+
   let web3Modal: Web3Modal | undefined
 
   async function openModal() {
@@ -39,7 +42,7 @@
   })
 </script>
 
-<header class="navbar shadow bg-base-100 gap-2">
+<header class={`navbar shadow bg-base-100 gap-2 ${className}`}>
   <div class="flex-1">
     <button class="btn btn-ghost text-xl normal-case not-prose">
       <a href="/">
