@@ -1,98 +1,24 @@
 <script lang="ts">
-  import { kuwaCoin, vendor, VENDOR_ADDRESS } from '$lib/internal/contracts'
-  import dayjs from 'dayjs'
-  import { formatEther, parseEther } from 'ethers/lib/utils'
-  import { signerAddress } from 'svelte-ethers-store'
-  import type { TransferEvent } from '$generated/typechain-types/contracts/Vendor'
-  import { shortenAddress } from '$lib/utils'
-  // @ts-ignore
-  import { Jazzicon } from 'svelte-ethers-store/components'
-  import { Card } from '$components'
-
-  let isBuying = false
-  let isSelling = false
-  let isApproving = false
-  let transfers: TransferEvent[] = []
-  let isTransfersLoading = false
-
-  $: balance = $kuwaCoin?.balanceOf($signerAddress)
-  $: allowance = $kuwaCoin?.allowance($signerAddress, VENDOR_ADDRESS)
-  $: rate = $vendor?.TOKEN_RATE()
-
-  async function getTransfers() {
-    if (!$vendor) return
-    isTransfersLoading = true
-    transfers = await $vendor.queryFilter($vendor.filters.Transfer())
-    isTransfersLoading = false
-  }
-
-  $: if ($vendor) {
-    $vendor.on('Transfer', (...args) => {
-      console.log({
-        transactionHash: args[4].transactionHash.slice(2, 4),
-        side: args[1],
-        tokenAmount: formatEther(args[3]),
-      })
-      balance = $kuwaCoin?.balanceOf($signerAddress)
-      allowance = $kuwaCoin?.allowance($signerAddress, VENDOR_ADDRESS)
-      getTransfers()
-    })
-  }
-
-  $: if ($vendor) {
-    getTransfers()
-  }
-
-  $: $kuwaCoin?.on('Approval', () => {
-    allowance = $kuwaCoin?.allowance($signerAddress, VENDOR_ADDRESS)
-    console.log('Approval')
-  })
-
-  $: price = (async () => {
-    if (!rate) return
-    const _rate = await rate
-    const price = parseEther('5000').div(_rate)
-    return price
-  })()
-
-  async function buyKuwaCoin() {
-    if (!$vendor) return
-    isBuying = true
-    try {
-      const tx = await $vendor.buyTokens({ value: await price })
-      const receipt = await tx.wait()
-    } catch (error) {
-      console.log('error:', error)
-    } finally {
-      isBuying = false
-    }
-  }
-
-  async function sellKuwaCoin() {
-    if (!$vendor) return
-    isSelling = true
-    try {
-      const tx = await $vendor.sellTokens(parseEther('5000'))
-      const receipt = await tx.wait()
-    } catch (error) {
-      console.log('error:', error)
-    } finally {
-      isSelling = false
-    }
-  }
-
-  async function approve() {
-    if (!$kuwaCoin || !balance) return
-    isApproving = true
-    try {
-      const tx = await $kuwaCoin.approve(VENDOR_ADDRESS, balance)
-      const receipt = await tx.wait()
-    } catch (error) {
-      console.log('error:', error)
-    } finally {
-      isApproving = false
-    }
-  }
+  const stories = [
+    {
+      title: '主の降誕',
+      description:
+        '荒廃した大地に Master Kuwa は現れた。その地に住まう人々は、貧しさも厭わず、愛を持って Master Kuwa をもてなした。Master Kuwa は感銘を受けた。Master Kuwa は礼として、自らの念を込めた「Kuwa Coin」を生み出し、人々に与えた。',
+      image: 'wasteland.jpeg',
+    },
+    {
+      title: '悲劇の始まり',
+      description:
+        'Kuwa Coin には不思議な力があった。手にした者には次々と幸運が訪れ、望むものを手にした。人々は Kuwa Coin を求めた。Kuwa Coin により富を得た者は、さらなる Kuwa Coinを求めた。そして次第に狂喜乱舞した。やがて人々は Kuwa Coin を奪い合うようになった。力あるものはさらなる力を求め、そして力なき者はなす術もなく、全てを奪われた。',
+      image: 'lots_of_coins.jpeg',
+    },
+    {
+      title: 'Kuwa の贖罪',
+      description:
+        'Master Kuwa は絶望した。あの日、愛を持って Master Kuwa をもてなした人々の姿はもうどこにもない。欲望のままに全てを奪い合っている。Master Kuwa は悔いた。そして償いを始めた。Master Kuwa は争いに疲れ果てた人々から Kuwa Coin を受け取り、愛を持って接した。Master Kuwa の贖罪は今もなお続いている。',
+      image: 'crying.jpeg',
+    },
+  ]
 </script>
 
 <svelte:head>
@@ -105,14 +31,40 @@
   <div class="hero-content text-center text-neutral-content">
     <div class="max-w-md">
       <h1 class="mb-5 text-5xl font-bold">Kuwa Coin</h1>
-      <p class="mb-5">
-        彼は言った世界は必ずしもみんな平等とは限らない 彼は言った世の中には絶対勝者と敗者が存在する
-        彼は言ったその勝者の頂点が自分自身そうTop of the world
-        彼が法であり秩序保たれるすぐさまなくなる世界のWar
-      </p>
+      <p class="mb-5">欲望を叶える禁断の力</p>
       <button class="btn btn-primary not-prose">
-        <a href="/buy-sell">Buy Now</a>
+        <a href="/buy-sell">Get it now</a>
       </button>
     </div>
   </div>
 </div>
+
+{#each stories as story, i}
+  <div class:bg-base-300={i % 2 === 0}>
+    <div
+      class="px-4 py-8 text-center flex flex-col md:flex-row md:gap-4 lg:gap-12 max-w-5xl mx-auto"
+      class:md:flex-row-reverse={i % 2 === 1}>
+      <div class="not-prose max-w-sm mx-auto">
+        <img src={story.image} alt="wasteland" class="rounded-lg" />
+      </div>
+      <div class="flex-1">
+        <h3>{story.title}</h3>
+        <p>{story.description}</p>
+      </div>
+    </div>
+  </div>
+{/each}
+
+<footer class="footer footer-center p-10 bg-base-200 text-base-content rounded not-prose">
+  <div>
+    <span class="text-2xl font-bold">桑</span>
+    <div class="grid grid-flow-col gap-4">
+      <a href="/buy-sell" class="link link-hover">Get KuwaCoin</a>
+      <a href="/data" class="link link-hover">Data</a>
+      <a href="/about" class="link link-hover">Developer</a>
+    </div>
+  </div>
+  <div>
+    <p>© 2022 Qwerty</p>
+  </div>
+</footer>
