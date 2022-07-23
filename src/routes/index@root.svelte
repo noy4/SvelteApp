@@ -3,7 +3,7 @@
     {
       title: '主の降誕',
       description:
-        '荒廃した大地に Master Kuwa は現れた。その地に住まう人々は、貧しさも厭わず、愛を持って Master Kuwa をもてなした。Master Kuwa は感銘を受けた。Master Kuwa は礼として、自らの念を込めた「Kuwa Coin」を生み出し、人々に与えた。',
+        '荒廃した大地に Master Kuwa は現れた。その地に住まう人々は、貧しさも厭わず、愛を持って Master Kuwa をもてなした。Master Kuwa は感銘を受けた。Master Kuwa は礼として、自らの力を込めた「Kuwa Coin」を生み出し、人々に与えた。',
       image: 'wasteland.jpeg',
     },
     {
@@ -54,6 +54,24 @@
     </div>
   </div>
 {/each}
+
+<div class="hero min-h-[50vh] not-prose" style="background-image: url(coin.jpeg);">
+  <div class="hero-overlay bg-opacity-60" />
+  <div class="hero-content text-center text-neutral-content">
+    <div class="max-w-md">
+      <h1 class="mb-5 text-5xl font-bold">Kuwa Coin</h1>
+      <p class="mb-5">欲望を叶える禁断の力</p>
+      <div class="grid grid-cols-2 gap-2">
+        <button class="btn btn-outline">
+          <a href="/buy-sell">Guide</a>
+        </button>
+        <button class="btn btn-primary">
+          <a href="/buy-sell">Get it now</a>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <footer class="footer footer-center p-10 bg-base-200 text-base-content rounded not-prose">
   <div>
