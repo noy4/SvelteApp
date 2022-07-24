@@ -17,7 +17,7 @@
 <script lang="ts">
   import { marked } from 'marked'
   export let post: { meta: Record<string, unknown>; body: string }
-  const html = marked.parse(post.body)
+  $: html = marked.parse(post.body)
 </script>
 
 <section class="px-4">

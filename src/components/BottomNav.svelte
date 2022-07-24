@@ -2,7 +2,7 @@
   import { page } from '$app/stores'
 </script>
 
-<div class="btm-nav max-w-3xl mx-auto border">
+<div class="btm-nav max-w-3xl mx-auto border-t border-t-base-200">
   <a class:active={$page.url.pathname === '/'} href="/">
     <svg
       xmlns="http://www.w3.org/2000/svg"
