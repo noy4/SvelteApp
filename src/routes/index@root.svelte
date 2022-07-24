@@ -63,7 +63,7 @@
       <p class="mb-5">欲望を叶える禁断の力</p>
       <div class="grid grid-cols-2 gap-2">
         <button class="btn btn-outline">
-          <a href="/buy-sell">Guide</a>
+          <a href="/guide">Guide</a>
         </button>
         <button class="btn btn-primary">
           <a href="/buy-sell">Get it now</a>
