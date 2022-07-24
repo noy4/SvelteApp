@@ -24,7 +24,7 @@ title: Kuwa Coin 開発
 - Kuwa Coin (Contract)
 - Vendor (Contract)
 
-React でフロント実装中に、思い立って Svelte でやってみることにした。
+React でやってたけど Svelte が気になってたので使ってみることにした。
 
 - Svelte
 - Daisy UI
@@ -35,6 +35,6 @@ React でフロント実装中に、思い立って Svelte でやってみるこ
 
 ## 変更
 
-Kuwa Coin を売り買いできる Vendor コントラクトを実装したが、ユーザーに前もってテスト ETH 取得してもらうのアレだったので、Kuwa Coin をばら撒く Faucet コントラクトに変更
+Kuwa Coin を売り買いできる Vendor コントラクトを実装したが、ユーザーに前もってテスト ETH 取得してもらうのアレだったので、Kuwa Coin をばら撒く Faucet コントラクトに変更（売り買いページ → [/buy-sell](/buy-sell)）
 
-売り買いページ → [/buy-sell](/buy-sell)
+MetaMask とかでウォレット接続して使うように作ってたけど MetaMask インストールさせるのアレなのでウォレット作成機能を実装

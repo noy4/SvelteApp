@@ -79,7 +79,7 @@
     <div class="grid grid-flow-col gap-4">
       <a href="/faucet" class="link link-hover">Get KuwaCoin</a>
       <a href="/data" class="link link-hover">Data</a>
-      <a href="/about" class="link link-hover">Developer</a>
+      <a href="/blog/developer" class="link link-hover">Developer</a>
     </div>
   </div>
   <div>
