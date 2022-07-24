@@ -1,8 +1,8 @@
 <script lang="ts" context="module">
   import type { Load } from '@sveltejs/kit'
 
-  export const load: Load = async ({ fetch }) => {
-    const url = `/blog/guide.json`
+  export const load: Load = async ({ fetch, params }) => {
+    const url = `/blog/${params.path}.json`
     const res = await fetch(url)
     if (!res.ok) {
       return {}
@@ -23,6 +23,7 @@
 <section class="px-4">
   <div class="card bg-base-100 max-w-2xl w-full mx-auto mt-8 p-8 rounded">
     <h1>{post.meta.title}</h1>
-    <template>{@html html}</template>
+    {@html html}
   </div>
+  <div class="h-32" />
 </section>
