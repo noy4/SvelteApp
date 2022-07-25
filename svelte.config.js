@@ -30,6 +30,9 @@ const config = {
       default: true,
     },
     trailingSlash: 'always',
+    paths: {
+      base: '/SvelteApp',
+    },
   },
 }
 
