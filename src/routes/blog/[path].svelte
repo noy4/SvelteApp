@@ -1,8 +1,10 @@
 <script lang="ts" context="module">
+  import { withBase } from '$lib/utils'
+
   import type { Load } from '@sveltejs/kit'
 
   export const load: Load = async ({ fetch, params }) => {
-    const url = `/blog/${params.path}.json`
+    const url = withBase(`/blog/${params.path}.json`)
     const res = await fetch(url)
     if (!res.ok) {
       return {}

@@ -2,7 +2,7 @@ import type { RequestHandler } from '@sveltejs/kit'
 import fs from 'fs'
 import matter from 'gray-matter'
 
-export const get: RequestHandler = ({ params }) => {
+export const GET: RequestHandler = ({ params }) => {
   const { path } = params
   let markdownFileName = fs
     .readdirSync('contents/blog')
