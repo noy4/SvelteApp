@@ -34,9 +34,9 @@
     <div class="max-w-md">
       <h1 class="mb-5 text-5xl font-bold">Kuwa Coin</h1>
       <p class="mb-5">欲望を叶える禁断の力</p>
-      <button class="btn btn-primary not-prose">
-        <a href={withBase('/faucet')}>Get it now</a>
-      </button>
+      <a href={withBase('/faucet')}>
+        <button class="btn btn-primary not-prose"> Get it now </button>
+      </a>
     </div>
   </div>
 </div>
@@ -47,7 +47,7 @@
       class="px-4 py-8 text-center flex flex-col md:flex-row md:gap-4 lg:gap-12 max-w-5xl mx-auto"
       class:md:flex-row-reverse={i % 2 === 1}>
       <div class="not-prose max-w-sm mx-auto">
-        <img src={story.image} alt="wasteland" class="rounded-lg" />
+        <img src={story.image} alt={story.image} class="rounded-lg" />
       </div>
       <div class="flex-1">
         <h3>{story.title}</h3>
@@ -64,12 +64,12 @@
       <h1 class="mb-5 text-5xl font-bold">Kuwa Coin</h1>
       <p class="mb-5">欲望を叶える禁断の力</p>
       <div class="grid grid-cols-2 gap-2">
-        <button class="btn btn-outline">
-          <a href={withBase('/blog/guide')}>Guide</a>
-        </button>
-        <button class="btn btn-primary">
-          <a href={withBase('/faucet')}>Get it now</a>
-        </button>
+        <a href={withBase('/blog/guide')}>
+          <button class="btn btn-outline w-full"> Guide </button>
+        </a>
+        <a href={withBase('/faucet')}>
+          <button class="btn btn-primary"> Get it now </button>
+        </a>
       </div>
     </div>
   </div>
