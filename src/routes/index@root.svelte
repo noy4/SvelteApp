@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { withBase } from '$lib/utils'
+
   const stories = [
     {
       title: '主の降誕',
@@ -33,7 +35,7 @@
       <h1 class="mb-5 text-5xl font-bold">Kuwa Coin</h1>
       <p class="mb-5">欲望を叶える禁断の力</p>
       <button class="btn btn-primary not-prose">
-        <a href="/faucet">Get it now</a>
+        <a href={withBase('/faucet')}>Get it now</a>
       </button>
     </div>
   </div>
@@ -63,10 +65,10 @@
       <p class="mb-5">欲望を叶える禁断の力</p>
       <div class="grid grid-cols-2 gap-2">
         <button class="btn btn-outline">
-          <a href="/blog/guide">Guide</a>
+          <a href={withBase('/blog/guide')}>Guide</a>
         </button>
         <button class="btn btn-primary">
-          <a href="/faucet">Get it now</a>
+          <a href={withBase('/faucet')}>Get it now</a>
         </button>
       </div>
     </div>
@@ -77,9 +79,9 @@
   <div>
     <span class="text-2xl font-bold">桑</span>
     <div class="grid grid-flow-col gap-4">
-      <a href="/faucet" class="link link-hover">Get KuwaCoin</a>
-      <a href="/data" class="link link-hover">Data</a>
-      <a href="/blog/developer" class="link link-hover">Developer</a>
+      <a href={withBase('/faucet')} class="link link-hover">Get KuwaCoin</a>
+      <a href={withBase('/data')} class="link link-hover">Data</a>
+      <a href={withBase('/blog/developer')} class="link link-hover">Developer</a>
     </div>
   </div>
   <div>

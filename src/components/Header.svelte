@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getWeb3Modal } from '$lib/internal/web3Modal'
   import { theme } from '$lib/styles/theme'
-  import { shortenAddress } from '$lib/utils'
+  import { shortenAddress, withBase } from '$lib/utils'
   import { ethers } from 'ethers'
   import { formatEther } from 'ethers/lib/utils'
   import { onMount } from 'svelte'
@@ -45,7 +45,7 @@
 <header class={`navbar shadow bg-base-100 gap-2 ${className}`}>
   <div class="flex-1">
     <button class="btn btn-ghost text-xl normal-case not-prose">
-      <a href="/">
+      <a href={withBase('/')}>
         <div class="sm:hidden">桑</div>
         <div class="hidden sm:block">Kuwa Coin</div>
       </a>
@@ -84,10 +84,10 @@
       </svg>
     </div>
     <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
-      <li><a href="/data">Data</a></li>
-      <li><a href="/debug">Debug</a></li>
-      <li><a href="/buy-sell">Buy & Sell</a></li>
-      <li><a href="/blog/developer">Developer</a></li>
+      <li><a href={withBase('/data')}>Data</a></li>
+      <li><a href={withBase('/debug')}>Debug</a></li>
+      <li><a href={withBase('/buy-sell')}>Buy & Sell</a></li>
+      <li><a href={withBase('/blog/developer')}>Developer</a></li>
       <li>
         <!-- 🌞 sun icon -->
         <div class:hidden={$theme === 'dark'} on:click={theme.setDark}>

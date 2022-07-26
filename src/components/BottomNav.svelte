@@ -1,9 +1,10 @@
-<script>
+<script lang="ts">
   import { page } from '$app/stores'
+  import { withBase } from '$lib/utils'
 </script>
 
 <div class="btm-nav max-w-3xl mx-auto border-t border-t-base-200">
-  <a class:active={$page.url.pathname === '/'} href="/">
+  <a class:active={$page.url.pathname === withBase('/')} href={withBase('/')}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       class="h-5 w-5"
@@ -17,7 +18,7 @@
         d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
   </a>
 
-  <a class:active={$page.url.pathname === '/faucet'} href="/faucet">
+  <a class:active={$page.url.pathname === withBase('/faucet/')} href={withBase('/faucet')}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -33,7 +34,7 @@
         d="M12 4c6.075 0 11 2.686 11 6v4c0 3.314-4.925 6-11 6c-5.967 0-10.824-2.591-10.995-5.823L1 14v-4c0-3.314 4.925-6 11-6zm0 12c-3.72 0-7.01-1.007-9-2.55V14c0 1.882 3.883 4 9 4c5.01 0 8.838-2.03 8.995-3.882L21 14l.001-.55C19.011 14.992 15.721 16 12 16zm0-10c-5.117 0-9 2.118-9 4c0 1.882 3.883 4 9 4s9-2.118 9-4c0-1.882-3.883-4-9-4z" /></svg>
   </a>
 
-  <a class:active={$page.url.pathname === '/blog/guide'} href="/blog/guide">
+  <a class:active={$page.url.pathname === withBase('/blog/guide/')} href={withBase('/blog/guide')}>
     <svg
       xmlns="http://www.w3.org/2000/svg"
       class="h-5 w-5"

@@ -1,3 +1,5 @@
+import { base } from '$app/paths'
+
 /**
  * Returns a string of form "abc...xyz"
  * @param str string to string
@@ -11,3 +13,5 @@ export const shortenAddress = (str: string | null, front = 5, end = 3) => {
   }
   return ''
 }
+
+export const withBase = (path: string) => base + path
