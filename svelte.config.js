@@ -22,10 +22,10 @@ const config = {
       $generated: 'src/generated',
       $components: 'src/components',
     },
-    vite: {
-      // define: { global: 'globalThis' },
-      // optimizeDeps: { include: ['ethers'] },
-    },
+    // vite: {
+    //   // define: { global: 'globalThis' },
+    //   // optimizeDeps: { include: ['ethers'] },
+    // },
     prerender: {
       default: true,
     },
