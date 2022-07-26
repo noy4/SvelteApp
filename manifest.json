@@ -1,6 +1,6 @@
 {
   ".svelte-kit/runtime/client/start.js": {
-    "file": "_app/immutable/start-8136da37.js",
+    "file": "_app/immutable/start-9632b82b.js",
     "src": ".svelte-kit/runtime/client/start.js",
     "isEntry": true,
     "imports": [
@@ -191,12 +191,12 @@
       "_Jazzicon-71a42527.js"
     ]
   },
-  "Jazzicon.css": {
-    "file": "_app/immutable/assets/Jazzicon-651f76d4.css",
-    "src": "Jazzicon.css"
-  },
   "__global.css": {
     "file": "_app/immutable/assets/__global-9e90ac1f.css",
     "src": "__global.css"
+  },
+  "Jazzicon.css": {
+    "file": "_app/immutable/assets/Jazzicon-651f76d4.css",
+    "src": "Jazzicon.css"
   }
 }
