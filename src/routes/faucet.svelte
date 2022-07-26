@@ -1,13 +1,15 @@
 <script lang="ts">
   import { kuwaCoin, vendor, VENDOR_ADDRESS } from '$lib/internal/contracts'
   import dayjs from 'dayjs'
-  import { formatEther, parseEther } from 'ethers/lib/utils'
+  import { parseEther } from 'ethers/lib/utils'
   import { signerAddress } from 'svelte-ethers-store'
   import type { TransferEvent } from '$generated/typechain-types/contracts/Vendor'
   import { shortenAddress } from '$lib/utils'
   // @ts-ignore
   import { Jazzicon } from 'svelte-ethers-store/components'
   import { Card } from '$components'
+  import { ethers } from 'ethers'
+  const formatEther = ethers.utils.formatEther // build すると formatEther ないと言われたので
 
   let isBuying = false
   let isSelling = false
