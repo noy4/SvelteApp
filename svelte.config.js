@@ -1,5 +1,7 @@
-import adapter from '@sveltejs/adapter-static'
+import adapterStatic from '@sveltejs/adapter-static'
 import preprocess from 'svelte-preprocess'
+
+const isProd = process.env.NODE_ENV === 'production'
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -12,7 +14,7 @@ const config = {
   ],
 
   kit: {
-    adapter: adapter(),
+    adapter: adapterStatic(),
 
     // Override http methods in the Todo forms
     methodOverride: {
@@ -22,16 +24,12 @@ const config = {
       $generated: 'src/generated',
       $components: 'src/components',
     },
-    // vite: {
-    //   // define: { global: 'globalThis' },
-    //   // optimizeDeps: { include: ['ethers'] },
-    // },
     prerender: {
       default: true,
     },
     trailingSlash: 'always',
     paths: {
-      base: '/SvelteApp',
+      base: isProd ? '/SvelteApp' : '',
     },
   },
 }
