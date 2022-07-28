@@ -12,14 +12,15 @@
   let className = ''
   export { className as class }
 
-  let isOpen = false
-  let tabIndex = 0
+  let isOpen = true
+  let modalId = ''
   let privateKey = ''
   let importErrorMessage = ''
 
   const wallet = writable<Wallet | undefined>()
 
-  async function openModal() {
+  async function openModal(id: string) {
+    modalId = id
     isOpen = true
   }
   async function closeModal() {
@@ -39,6 +40,7 @@
     defaultEvmStores.disconnect()
     wallet.set(undefined)
     localStorage.removeItem('privateKey')
+    isOpen = false
   }
 
   function importWallet() {
@@ -69,72 +71,56 @@
   })
 </script>
 
-<!-- Modal -->
-<input type="checkbox" id="my-modal" class="modal-toggle" checked={isOpen} />
-<div class="modal not-prose" on:click|self={closeModal}>
+<!-- Wallet modal -->
+<input
+  type="checkbox"
+  id="walletModal"
+  class="modal-toggle"
+  checked={isOpen && modalId === 'walletModal'} />
+<label for="walletModal" class="modal not-prose" on:click|self={closeModal}>
   <div class="modal-box max-w-md">
-    <div class="tabs">
-      <div
-        class="tab tab-lifted"
-        class:tab-active={tabIndex === 0}
-        on:click={() => {
-          tabIndex = 0
-        }}>
-        Create
+    <h2 class="font-bold text-xl pb-2">Your wallet</h2>
+    {#if $wallet}
+      <h3 class="font-bold mt-2">Address</h3>
+      <div class="overflow-x-scroll">
+        <div>{$signerAddress}</div>
       </div>
-      <div
-        class="tab tab-lifted"
-        class:tab-active={tabIndex === 1}
-        on:click={() => {
-          tabIndex = 1
-        }}>
-        Import
+      <h3 class="font-bold mt-2">Private key</h3>
+      <div class="overflow-x-scroll">
+        <div>{$wallet?.privateKey}</div>
       </div>
-      <div
-        class="tab tab-lifted"
-        class:tab-active={tabIndex === 2}
-        on:click={() => {
-          tabIndex = 2
-        }}>
-        Logout
-      </div>
-    </div>
-
-    {#if tabIndex === 0}
-      <button class="btn btn-primary mt-4 normal-case" on:click={createWallet}
-        >Create new wallet</button>
-      {#if $wallet}
-        <h3 class="font-bold mt-2">Address</h3>
-        <div class="overflow-x-scroll">
-          <div>{$signerAddress}</div>
-        </div>
-        <h3 class="font-bold mt-2">Private key</h3>
-        <div class="overflow-x-scroll">
-          <div>{$wallet?.privateKey}</div>
-        </div>
-      {/if}
-    {:else if tabIndex === 1}
-      <div class="form-control w-full max-w-xs mt-2">
-        <label for="privateKey" class="label">
-          <span class="">Private key</span>
-        </label>
-        <input
-          id="privateKey"
-          type="text"
-          placeholder="Type here"
-          bind:value={privateKey}
-          class="input input-bordered w-full max-w-xs" />
-      </div>
-      <button class="btn btn-primary mt-4 normal-case" on:click={importWallet}
-        >Import wallet</button>
-      <p class="text-error mt-2">{importErrorMessage}</p>
-    {:else if tabIndex === 2}
-      <button class="btn btn-primary mt-4 normal-case w-40" on:click={disconnect}>Logout</button>
+      <label for="walletModal" class="btn btn-primary mt-4 normal-case w-32" on:click={disconnect}
+        >Logout</label>
     {/if}
   </div>
-</div>
+</label>
 
-<header class={`navbar shadow bg-base-100 gap-2 ${className}`}>
+<!-- Import modal -->
+<input
+  type="checkbox"
+  id="importModal"
+  class="modal-toggle"
+  checked={isOpen && modalId === 'importModal'} />
+<label for="importModal" class="modal not-prose" on:click|self={closeModal}>
+  <div class="modal-box max-w-md">
+    <div class="form-control w-full max-w-xs mt-2">
+      <label for="privateKey" class="label">
+        <span class="">Private key</span>
+      </label>
+      <input
+        id="privateKey"
+        type="text"
+        placeholder="Type here"
+        bind:value={privateKey}
+        class="input input-bordered w-full max-w-xs" />
+    </div>
+    <label for="importModal" class="btn btn-primary mt-4 normal-case" on:click={importWallet}
+      >Import wallet</label>
+    <p class="text-error mt-2">{importErrorMessage}</p>
+  </div>
+</label>
+
+<header class={`navbar shadow bg-base-100 gap-2 not-prose ${className}`}>
   <div class="flex-1">
     <button class="btn btn-ghost text-xl normal-case not-prose">
       <a href={withBase('/')}>
@@ -151,14 +137,21 @@
       {/await}
       <button
         class="btn btn-ghost btn-sm normal-case bg-base-100 rounded-xl gap-2"
-        on:click={openModal}>
+        on:click={() => openModal('walletModal')}>
         <div>{shortenAddress($signerAddress)}</div>
         <Jazzicon size="18" />
       </button>
     </div>
   {:else}
-    <button class="btn btn-primary btn-sm btn-outline" on:click={openModal}
-      >Create / Import Wallet</button>
+    <div class="dropdown dropdown-hover">
+      <div tabindex="0" class="btn btn-outline btn-sm btn-primary normal-case">
+        Create / Import Wallet
+      </div>
+      <ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+        <li><div on:click={createWallet}>Create new wallet</div></li>
+        <li><div>Import wallet</div></li>
+      </ul>
+    </div>
   {/if}
 
   <div class="dropdown dropdown-end not-prose">
