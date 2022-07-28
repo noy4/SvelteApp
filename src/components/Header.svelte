@@ -1,46 +1,138 @@
 <script lang="ts">
-  import { getWeb3Modal } from '$lib/internal/web3Modal'
   import { theme } from '$lib/styles/theme'
   import { shortenAddress, withBase } from '$lib/utils'
-  import { ethers } from 'ethers'
+  import { ethers, Wallet } from 'ethers'
   import { formatEther } from 'ethers/lib/utils'
   import { onMount } from 'svelte'
   import { defaultEvmStores, signer, signerAddress } from 'svelte-ethers-store'
   // @ts-ignore
   import { Jazzicon } from 'svelte-ethers-store/components'
-  import type Web3Modal from 'web3modal'
+  import { writable } from 'svelte/store'
 
   let className = ''
   export { className as class }
 
-  let web3Modal: Web3Modal | undefined
+  let isOpen = false
+  let tabIndex = 0
+  let privateKey = ''
+  let importErrorMessage = ''
+
+  const wallet = writable<Wallet | undefined>()
 
   async function openModal() {
-    if ($signerAddress) return
-    const _provider = await web3Modal?.connect()
-    const provider = new ethers.providers.Web3Provider(_provider)
-    defaultEvmStores.setProvider(provider)
+    isOpen = true
+  }
+  async function closeModal() {
+    isOpen = false
+  }
+
+  async function createWallet() {
+    const _wallet = ethers.Wallet.createRandom()
+    localStorage.privateKey = _wallet.privateKey
+    const provider = new ethers.providers.JsonRpcProvider()
+    const signer = new ethers.Wallet(_wallet.privateKey, provider)
+    wallet.set(signer)
+    defaultEvmStores.setProvider(signer.provider, signer.address)
   }
 
   function disconnect() {
-    web3Modal?.clearCachedProvider()
     defaultEvmStores.disconnect()
+    wallet.set(undefined)
+    localStorage.removeItem('privateKey')
+  }
+
+  function importWallet() {
+    importErrorMessage = ''
+    const provider = new ethers.providers.JsonRpcProvider()
+    try {
+      const signer = new ethers.Wallet(privateKey, provider)
+      wallet.set(signer)
+      localStorage.privateKey = signer.privateKey
+      defaultEvmStores.setProvider(signer.provider, signer.address)
+    } catch (e) {
+      importErrorMessage = 'Invalid private key'
+    }
   }
 
   async function connectOnMount() {
-    if (!web3Modal?.cachedProvider) return
-    const _provider = await web3Modal.connectTo(web3Modal.cachedProvider)
-    const provider = new ethers.providers.Web3Provider(_provider)
-    defaultEvmStores.setProvider(provider)
+    if (!localStorage.privateKey) return
+    const provider = new ethers.providers.JsonRpcProvider()
+    const signer = new ethers.Wallet(localStorage.privateKey, provider)
+    wallet.set(signer)
+    defaultEvmStores.setProvider(signer.provider, signer.address)
   }
 
   $: balance = $signer && $signer.getBalance()
 
   onMount(() => {
-    web3Modal = getWeb3Modal()
     connectOnMount()
   })
 </script>
+
+<!-- Modal -->
+<input type="checkbox" id="my-modal" class="modal-toggle" checked={isOpen} />
+<div class="modal not-prose" on:click|self={closeModal}>
+  <div class="modal-box max-w-md">
+    <div class="tabs">
+      <div
+        class="tab tab-lifted"
+        class:tab-active={tabIndex === 0}
+        on:click={() => {
+          tabIndex = 0
+        }}>
+        Create
+      </div>
+      <div
+        class="tab tab-lifted"
+        class:tab-active={tabIndex === 1}
+        on:click={() => {
+          tabIndex = 1
+        }}>
+        Import
+      </div>
+      <div
+        class="tab tab-lifted"
+        class:tab-active={tabIndex === 2}
+        on:click={() => {
+          tabIndex = 2
+        }}>
+        Logout
+      </div>
+    </div>
+
+    {#if tabIndex === 0}
+      <button class="btn btn-primary mt-4 normal-case" on:click={createWallet}
+        >Create new wallet</button>
+      {#if $wallet}
+        <h3 class="font-bold mt-2">Address</h3>
+        <div class="overflow-x-scroll">
+          <div>{$signerAddress}</div>
+        </div>
+        <h3 class="font-bold mt-2">Private key</h3>
+        <div class="overflow-x-scroll">
+          <div>{$wallet?.privateKey}</div>
+        </div>
+      {/if}
+    {:else if tabIndex === 1}
+      <div class="form-control w-full max-w-xs mt-2">
+        <label for="privateKey" class="label">
+          <span class="">Private key</span>
+        </label>
+        <input
+          id="privateKey"
+          type="text"
+          placeholder="Type here"
+          bind:value={privateKey}
+          class="input input-bordered w-full max-w-xs" />
+      </div>
+      <button class="btn btn-primary mt-4 normal-case" on:click={importWallet}
+        >Import wallet</button>
+      <p class="text-error mt-2">{importErrorMessage}</p>
+    {:else if tabIndex === 2}
+      <button class="btn btn-primary mt-4 normal-case w-40" on:click={disconnect}>Logout</button>
+    {/if}
+  </div>
+</div>
 
 <header class={`navbar shadow bg-base-100 gap-2 ${className}`}>
   <div class="flex-1">
@@ -59,13 +151,14 @@
       {/await}
       <button
         class="btn btn-ghost btn-sm normal-case bg-base-100 rounded-xl gap-2"
-        on:click={disconnect}>
+        on:click={openModal}>
         <div>{shortenAddress($signerAddress)}</div>
         <Jazzicon size="18" />
       </button>
     </div>
   {:else}
-    <button class="btn btn-primary btn-sm btn-outline" on:click={openModal}>Connect</button>
+    <button class="btn btn-primary btn-sm btn-outline" on:click={openModal}
+      >Create / Import Wallet</button>
   {/if}
 
   <div class="dropdown dropdown-end not-prose">
