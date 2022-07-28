@@ -26,7 +26,7 @@ const config = {
     },
     prerender: {
       default: true,
-      entries: ['*', '/blog/guide.json', '/blog/developer.json'],
+      entries: ['*', '/blog/guide.json', '/blog/developer.json', '/blog/guide', '/blog/developer'],
     },
     trailingSlash: 'always',
     paths: {
